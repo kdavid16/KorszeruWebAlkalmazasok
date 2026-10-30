@@ -1,0 +1,240 @@
+@model IReadOnlyList<InventoryManager.Web.Models.EmailNotificationLog>
+@{
+    ViewData["Title"] = "E-mail Értesítések Naplója";
+    var settings = ViewBag.Settings as InventoryManager.Web.Services.EmailSettings;
+    bool isUsernameMissing = string.IsNullOrWhiteSpace(settings?.Username);
+    bool isPasswordMissing = string.IsNullOrWhiteSpace(settings?.Password);
+    bool isConfigIncomplete = settings?.EnableRealSending == true && (isUsernameMissing || isPasswordMissing);
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-envelope-check text-primary me-2"></i>E-mail Értesítések</h2>
+        <p class="text-muted mb-0">Az automatikus utánrendelésekről és raktári eseményekről küldött e-mailek felügyelete.</p>
+    </div>
+    <div>
+        <form asp-action="SendTest" method="post" class="d-inline">
+            <button type="submit" class="btn btn-success fw-semibold shadow-sm">
+                <i class="bi bi-send-check me-1"></i> Teszt e-mail küldése most
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill fs-4 me-2"></i>
+            <div>
+                <strong>E-mail küldési hiba!</strong><br />
+                @TempData["ErrorMessage"]
+            </div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Bezárás"></button>
+    </div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        @TempData["InfoMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Bezárás"></button>
+    </div>
+}
+
+@if (isConfigIncomplete)
+{
+    <div class="alert alert-warning border-warning shadow-sm" role="alert">
+        <h5 class="alert-heading fw-bold mb-1"><i class="bi bi-exclamation-circle-fill me-2"></i>Valós küldés be van kapcsolva, de a beállítások hiányosak!</h5>
+        <p class="mb-2">
+            Az <code>appsettings.json</code> fájlban az <code>EnableRealSending: true</code> értékre van állítva, azonban a levélküldéshez a Google (Gmail) hitelesítést igényel:
+        </p>
+        <ul class="mb-2">
+            @if (isUsernameMissing)
+            {
+                <li><strong class="text-danger">Username mező üres:</strong> Ide a küldő Gmail címet kell beírni (pl. <code>"kundavid16@gmail.com"</code>).</li>
+            }
+            @if (isPasswordMissing)
+            {
+                <li><strong class="text-danger">Password mező üres:</strong> Ide a Google által generált <strong>16 karakteres Alkalmazásjelszót</strong> kell beilleszteni (a normál fiókjelszót a Google biztonsági okból elutasítja).</li>
+            }
+        </ul>
+        <hr class="my-2" />
+        <small class="text-dark">Lásd az alábbi útmutatót a 2 perces beállításhoz!</small>
+    </div>
+}
+
+<!-- SMTP Állapot Kártya -->
+<div class="row g-3 mb-4">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title fw-bold mb-0"><i class="bi bi-gear-wide-connected me-2"></i>SMTP Konfiguráció Állapota</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5 text-muted">Értesítési címzett:</dt>
+                    <dd class="col-sm-7"><span class="badge bg-primary fs-6">@(settings?.RecipientEmail ?? "kundavid16@gmail.com")</span></dd>
+
+                    <dt class="col-sm-5 text-muted">Valós SMTP küldés:</dt>
+                    <dd class="col-sm-7">
+                        @if (settings?.EnableRealSending == true)
+                        {
+                            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i>Bekapcsolva (EnableRealSending = true)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary"><i class="bi bi-pause-circle me-1"></i>Fejlesztői mód (Naplózás)</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5 text-muted">SMTP Szerver:</dt>
+                    <dd class="col-sm-7 font-monospace">@(settings?.SmtpServer ?? "smtp.gmail.com"):@(settings?.SmtpPort ?? 587)</dd>
+
+                    <dt class="col-sm-5 text-muted">Küldő fiók (Username):</dt>
+                    <dd class="col-sm-7">
+                        @if (!isUsernameMissing)
+                        {
+                            <span class="text-success fw-bold font-monospace">@settings?.Username</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Nincs kitöltve</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-5 text-muted">Jelszó állapota:</dt>
+                    <dd class="col-sm-7">
+                        @if (!isPasswordMissing)
+                        {
+                            <span class="text-success"><i class="bi bi-shield-check me-1"></i>Beállítva (Alkalmazásjelszó)</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Nincs kitöltve</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Útmutató kártya -->
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0 h-100 bg-light">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title fw-bold mb-0 text-dark"><i class="bi bi-google me-2"></i>Gmail Beállítás Lépései</h5>
+            </div>
+            <div class="card-body small text-muted">
+                <p class="mb-2">A Gmail szigorú biztonsági szabályzata miatt <strong>Alkalmazásjelszó (App Password)</strong> szükséges:</p>
+                <ol class="ps-3 mb-3">
+                    <li class="mb-1">Nyisd meg: <a href="https://myaccount.google.com/security" target="_blank" class="fw-semibold">Google Fiók &rarr; Biztonság</a></li>
+                    <li class="mb-1">Kapcsold be a <strong>2 lépcsős azonosítást</strong> (ha még nincs).</li>
+                    <li class="mb-1">Keresd meg a keresőben: <em>"Alkalmazásjelszavak"</em> (App Passwords).</li>
+                    <li class="mb-1">Hozz létre egy új jelszót (pl. név: <code>InventoryManager</code>).</li>
+                    <li class="mb-1">A kapott 16 betűs jelszót másold be az <code>appsettings.json</code> <code>"Password"</code> mezőjébe!</li>
+                </ol>
+                <div class="p-2 bg-white rounded border">
+                    <code>"Username": "kundavid16@gmail.com",<br>"Password": "xxxx xxxx xxxx xxxx"</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Kiküldött Értesítések Naplója -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+        <h5 class="card-title fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Kiküldött Értesítések Naplója</h5>
+        <span class="badge bg-secondary">Összesen: @Model.Count db</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Időpont</th>
+                    <th>Címzett</th>
+                    <th>Tárgy</th>
+                    <th>Kézbesítés Státusza</th>
+                    <th class="text-center">Előnézet</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted">
+                            <i class="bi bi-envelope-open fs-2 d-block mb-2"></i>
+                            Még nincsenek rögzített e-mail értesítések. Kattints a "Teszt e-mail küldése most" gombra!
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @for (int i = 0; i < Model.Count; i++)
+                    {
+                        var log = Model[i];
+                        <tr>
+                            <td class="text-muted small font-monospace">
+                                @log.SentAt.ToLocalTime().ToString("yyyy.MM.dd. HH:mm:ss")
+                            </td>
+                            <td>
+                                <span class="badge bg-info-subtle text-info-emphasis border">@log.Recipient</span>
+                            </td>
+                            <td class="fw-semibold">
+                                @log.Subject
+                            </td>
+                            <td>
+                                @if (log.IsSuccess)
+                                {
+                                    <span class="badge bg-success-subtle text-success border border-success">
+                                        <i class="bi bi-check-circle me-1"></i> @log.StatusMessage
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger-subtle text-danger border border-danger">
+                                        <i class="bi bi-exclamation-triangle me-1"></i> @log.StatusMessage
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#emailModal-@i">
+                                    <i class="bi bi-eye"></i> Megtekintés
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="emailModal-@i" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content text-start">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title fw-bold">@log.Subject</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Bezárás"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="mb-2 text-muted small">
+                                                    <strong>Címzett:</strong> @log.Recipient | 
+                                                    <strong>Időpont:</strong> @log.SentAt.ToLocalTime().ToString("yyyy.MM.dd. HH:mm:ss") |
+                                                    <strong>Státusz:</strong> @log.StatusMessage
+                                                </div>
+                                                <hr />
+                                                <div class="border p-3 rounded bg-white">
+                                                    @Html.Raw(log.Body)
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bezárás</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

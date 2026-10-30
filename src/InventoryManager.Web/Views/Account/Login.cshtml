@@ -1,0 +1,88 @@
+@model InventoryManager.Web.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Bejelentkezés";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center mt-4">
+    <div class="col-lg-5 col-md-8">
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-header bg-dark text-white text-center py-4">
+                <i class="bi bi-shield-lock-fill fs-1 text-warning d-block mb-2"></i>
+                <h4 class="fw-bold mb-0">InventoryManager Belépés</h4>
+                <small class="text-white-50">Válassz szerepkört vagy add meg a belépési adataidat</small>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Login" method="post">
+                    <input type="hidden" asp-for="ReturnUrl" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Username" class="form-label fw-semibold">Felhasználónév</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input asp-for="Username" class="form-control" placeholder="raktaros vagy beszerzo" autofocus />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-semibold">Jelszó</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-key"></i></span>
+                            <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Bejelentkezés
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4 text-muted" />
+
+                <!-- Gyors demó bejelentkezés gombok -->
+                <div class="text-center">
+                    <p class="text-muted small fw-semibold text-uppercase mb-2">Egykattintásos teszt belépés:</p>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <form asp-action="QuickLogin" method="post">
+                                <input type="hidden" name="role" value="Raktaros" />
+                                <button type="submit" class="btn btn-outline-success w-100 py-2">
+                                    <i class="bi bi-box-seam me-1 d-block fs-5"></i>
+                                    <strong>Raktáros</strong>
+                                    <small class="d-block text-muted" style="font-size: 11px;">Árubevételezés, Kiadás</small>
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-6">
+                            <form asp-action="QuickLogin" method="post">
+                                <input type="hidden" name="role" value="Beszerzo" />
+                                <button type="submit" class="btn btn-outline-primary w-100 py-2">
+                                    <i class="bi bi-cart-check me-1 d-block fs-5"></i>
+                                    <strong>Beszerző</strong>
+                                    <small class="d-block text-muted" style="font-size: 11px;">Termékek, Utánrendelés</small>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-3 bg-light rounded border text-muted small">
+                    <strong>Demó felhasználói fiókok:</strong>
+                    <ul class="mb-0 ps-3 mt-1">
+                        <li><code>raktaros</code> / <code>Raktar123!</code> (Raktáros szerepkör)</li>
+                        <li><code>beszerzo</code> / <code>Beszerzo123!</code> (Beszerző szerepkör)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,69 @@
+@model InventoryManager.Web.ViewModels.ReceiveStockViewModel
+@{
+    ViewData["Title"] = "Új Beérkezés Rögzítése";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-7 col-md-9">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0 fw-bold">
+                    <i class="bi bi-arrow-down-circle-fill me-2"></i>Új Árubevételezés / Beérkezés Rögzítése
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">
+                    Itt tud új beszállítói beérkezést vagy raktárkészlet-növelést rögzíteni. A mentés után a termék aktuális készlete automatikusan megemelkedik.
+                </p>
+
+                <form asp-action="Receive" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="ProductId" class="form-label fw-semibold">Termék kiválasztása *</label>
+                        <select asp-for="ProductId" asp-items="Model.ProductOptions" class="form-select form-select-lg">
+                            <option value="">-- Válasszon terméket a listából --</option>
+                        </select>
+                        <span asp-validation-for="ProductId" class="text-danger small"></span>
+                        <div class="form-text">Ha a termék még nem létezik, előbb vegye fel az <a asp-controller="Products" asp-action="Create">Új termék</a> menüpontban.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Quantity" class="form-label fw-semibold">Beérkezett mennyiség *</label>
+                        <div class="input-group">
+                            <input asp-for="Quantity" type="number" min="1" class="form-control form-control-lg" placeholder="pl. 10" />
+                            <span class="input-group-text">egység</span>
+                        </div>
+                        <span asp-validation-for="Quantity" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ReferenceNumber" class="form-label fw-semibold">Bizonylatszám / Szállítólevélszám</label>
+                        <input asp-for="ReferenceNumber" class="form-control" placeholder="pl. SZALL-2026/045" />
+                        <span asp-validation-for="ReferenceNumber" class="text-danger small"></span>
+                        <div class="form-text">A szállítólevél vagy bevételezési bizonylat azonosítója.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Notes" class="form-label fw-semibold">Megjegyzés / Beszállító adatai</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="pl. Beszállító: Tech Hungária Kft. - Sérülésmentes átvétel"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger small"></span>
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-2 border-top">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Mégse
+                        </a>
+                        <button type="submit" class="btn btn-success px-4 fw-bold">
+                            <i class="bi bi-check-lg me-1"></i> Beérkezés jóváhagyása
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

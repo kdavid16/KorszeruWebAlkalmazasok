@@ -1,0 +1,112 @@
+@model InventoryManager.Web.Models.Product
+@{
+    ViewData["Title"] = "Új Termék Felvétele";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0 fw-bold">
+                    <i class="bi bi-box-seam me-2"></i>Új Termék Törzsadat Felvétele (Beszerző)
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3">Alapadatok</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Sku" class="form-label fw-semibold">Cikkszám (SKU) *</label>
+                            <input asp-for="Sku" class="form-control" placeholder="pl. HW-MON-001" />
+                            <span asp-validation-for="Sku" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Category" class="form-label fw-semibold">Kategória</label>
+                            <input asp-for="Category" class="form-control" placeholder="pl. Kijelzők, Perifériák, Irodaszer" />
+                            <span asp-validation-for="Category" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-semibold">Terméknév *</label>
+                        <input asp-for="Name" class="form-control" placeholder="pl. Samsung Odyssey G7 Monitor" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label fw-semibold">Leírás</label>
+                        <textarea asp-for="Description" class="form-control" rows="2" placeholder="Termék műszaki leírása..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-4">
+                            <label asp-for="Unit" class="form-label fw-semibold">Mértékegység *</label>
+                            <input asp-for="Unit" class="form-control" placeholder="db, kg, liter..." />
+                            <span asp-validation-for="Unit" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="UnitPrice" class="form-label fw-semibold">Egységár (Ft) *</label>
+                            <div class="input-group">
+                                <input asp-for="UnitPrice" type="number" step="1" class="form-control" placeholder="pl. 15000" />
+                                <span class="input-group-text">Ft</span>
+                            </div>
+                            <span asp-validation-for="UnitPrice" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="MinimumStockLevel" class="form-label fw-semibold">Min. küszöb *</label>
+                            <input asp-for="MinimumStockLevel" type="number" min="0" class="form-control" placeholder="pl. 5" />
+                            <span asp-validation-for="MinimumStockLevel" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-dark border-bottom pb-2 mb-3 mt-4">
+                        <i class="bi bi-robot text-primary me-2"></i>Automatikus Utánrendelési Szabály
+                    </h5>
+
+                    <div class="mb-3 form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" asp-for="AutoReorderEnabled" id="autoReorderSwitch" checked>
+                        <label class="form-check-label fw-semibold" for="autoReorderSwitch">
+                            Automata utánrendelési szabály bekapcsolása (ha a készlet eléri a minimum küszöböt)
+                        </label>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="ReorderQuantity" class="form-label fw-semibold">Utánrendelendő tétel *</label>
+                            <input asp-for="ReorderQuantity" type="number" min="1" class="form-control" placeholder="pl. 20" />
+                            <span asp-validation-for="ReorderQuantity" class="text-danger small"></span>
+                            <div class="form-text">Ennyi darab kerül automatikusan a rendelésbe.</div>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="SupplierName" class="form-label fw-semibold">Beszállító megnevezése</label>
+                            <input asp-for="SupplierName" class="form-control" placeholder="pl. Dell Magyarország Kft." />
+                            <span asp-validation-for="SupplierName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="SupplierEmail" class="form-label fw-semibold">Beszállító e-mail címe</label>
+                            <input asp-for="SupplierEmail" class="form-control" placeholder="pl. rendeles@beszallito.hu" />
+                            <span asp-validation-for="SupplierEmail" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between pt-3 border-top mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Mégse
+                        </a>
+                        <button type="submit" class="btn btn-primary px-4 fw-bold">
+                            <i class="bi bi-save me-1"></i> Termék és Szabály mentése
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

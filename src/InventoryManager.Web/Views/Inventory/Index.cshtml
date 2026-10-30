@@ -1,0 +1,195 @@
+@model InventoryManager.Web.ViewModels.StockDashboardViewModel
+@{
+    ViewData["Title"] = "Raktári Készletlista & Áttekintés";
+    bool isRaktaros = User.IsInRole("Raktaros");
+    bool isBeszerzo = User.IsInRole("Beszerzo");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-speedometer2 text-primary me-2"></i>Raktári Készletlista</h2>
+        <p class="text-muted mb-0">Aktuális készletszintek, készletérték és figyelmeztetések.</p>
+    </div>
+    <div class="d-flex gap-2">
+        @if (isRaktaros)
+        {
+            <a asp-action="Receive" class="btn btn-success">
+                <i class="bi bi-arrow-down-circle-fill me-1"></i> Új beérkezés rögzítése
+            </a>
+        }
+        @if (isBeszerzo)
+        {
+            <a asp-controller="Products" asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Új termék
+            </a>
+            <a asp-controller="Reorders" asp-action="Index" class="btn btn-outline-warning text-dark fw-semibold">
+                <i class="bi bi-cart-check me-1"></i> Utánrendelések
+            </a>
+        }
+    </div>
+</div>
+
+<!-- Statisztikai kártyák -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-primary border-4 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold">Összes Termék</div>
+                        <div class="fs-3 fw-bold text-dark">@Model.TotalProducts</div>
+                    </div>
+                    <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-circle">
+                        <i class="bi bi-tags fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-info border-4 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold">Összesen Raktáron</div>
+                        <div class="fs-3 fw-bold text-dark">@Model.TotalItemsInStock.ToString("N0") <small class="fs-6 text-muted">db</small></div>
+                    </div>
+                    <div class="bg-info bg-opacity-10 text-info p-3 rounded-circle">
+                        <i class="bi bi-boxes fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-success border-4 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold">Készlet Összérték</div>
+                        <div class="fs-3 fw-bold text-success">@Model.TotalInventoryValue.ToString("N0") <small class="fs-6">Ft</small></div>
+                    </div>
+                    <div class="bg-success bg-opacity-10 text-success p-3 rounded-circle">
+                        <i class="bi bi-currency-dollar fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0 border-start border-warning border-4 h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <div class="text-muted small text-uppercase fw-semibold">Alacsony Készlet</div>
+                        <div class="fs-3 fw-bold @(Model.LowStockCount + Model.OutOfStockCount > 0 ? "text-danger" : "text-dark")">
+                            @(Model.LowStockCount + Model.OutOfStockCount)
+                        </div>
+                    </div>
+                    <div class="bg-warning bg-opacity-10 text-warning p-3 rounded-circle">
+                        <i class="bi bi-exclamation-triangle fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Készletlista táblázat -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <h5 class="card-title fw-bold mb-0">Aktuális Raktárkészlet</h5>
+        <span class="badge bg-secondary">Összesen: @Model.Items.Count termék</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Cikkszám (SKU)</th>
+                    <th>Terméknév</th>
+                    <th>Kategória</th>
+                    <th class="text-end">Egységár</th>
+                    <th class="text-center">Aktuális Készlet</th>
+                    <th class="text-center">Állapot</th>
+                    <th class="text-end">Készletérték</th>
+                    <th class="text-center">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Items.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Még nincsenek rögzített termékek a rendszerben.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model.Items)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace">@item.Sku</span>
+                            </td>
+                            <td>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId" class="fw-semibold text-decoration-none">
+                                    @item.Name
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge-category">@(item.Category ?? "Nincs")</span>
+                            </td>
+                            <td class="text-end">
+                                @item.UnitPrice.ToString("N0") Ft
+                            </td>
+                            <td class="text-center">
+                                <span class="fs-5 fw-bold">@item.CurrentStock</span> <small class="text-muted">@item.Unit</small>
+                            </td>
+                            <td class="text-center">
+                                @if (item.IsOutOfStock)
+                                {
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle me-1"></i> Elfogyott
+                                    </span>
+                                }
+                                else if (item.IsLowStock)
+                                {
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="bi bi-exclamation-triangle me-1"></i> Alacsony (min: @item.MinimumStockLevel)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i> Rendben
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end fw-semibold">
+                                @item.TotalValue.ToString("N0") Ft
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    @if (isRaktaros)
+                                    {
+                                        <a asp-action="Receive" asp-route-productId="@item.ProductId" class="btn btn-outline-success" title="Új beérkezés erre a termékre">
+                                            <i class="bi bi-plus-lg"></i> Beérkezés
+                                        </a>
+                                        <a asp-action="Issue" asp-route-productId="@item.ProductId" class="btn btn-outline-danger" title="Kiadás ebből a termékből">
+                                            <i class="bi bi-dash-lg"></i> Kiadás
+                                        </a>
+                                    }
+                                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-outline-secondary" title="Termék adatai és történet">
+                                        <i class="bi bi-eye"></i> Részletek
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

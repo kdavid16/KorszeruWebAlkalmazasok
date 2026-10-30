@@ -1,0 +1,101 @@
+@model IReadOnlyList<InventoryManager.Web.Models.Product>
+@{
+    ViewData["Title"] = "Terméklista";
+    bool isBeszerzo = User.IsInRole("Beszerzo");
+    bool isRaktaros = User.IsInRole("Raktaros");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-tag text-primary me-2"></i>Termékek nyilvántartása</h2>
+        <p class="text-muted mb-0">Rendszerben nyilvántartott terméktörzs és alapadatok.</p>
+    </div>
+    @if (isBeszerzo)
+    {
+        <div>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-1"></i> Új termék felvétele
+            </a>
+        </div>
+    }
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Cikkszám (SKU)</th>
+                    <th>Terméknév</th>
+                    <th>Kategória</th>
+                    <th>Mértékegység</th>
+                    <th class="text-end">Egységár</th>
+                    <th class="text-center">Min. küszöb</th>
+                    <th class="text-center">Automata utánrendelés</th>
+                    <th class="text-center">Műveletek</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="8" class="text-center py-4 text-muted">
+                            Még nincsenek felvett termékek.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace">@p.Sku</span>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@p.Id" class="fw-semibold text-decoration-none">
+                                    @p.Name
+                                </a>
+                                @if (!string.IsNullOrEmpty(p.Description))
+                                {
+                                    <div class="text-muted small text-truncate" style="max-width: 320px;">@p.Description</div>
+                                }
+                            </td>
+                            <td>
+                                <span class="badge-category">@(p.Category ?? "Nincs")</span>
+                            </td>
+                            <td>@p.Unit</td>
+                            <td class="text-end fw-semibold">@p.UnitPrice.ToString("N0") Ft</td>
+                            <td class="text-center fw-semibold">@p.MinimumStockLevel @p.Unit</td>
+                            <td class="text-center">
+                                @if (p.AutoReorderEnabled)
+                                {
+                                    <span class="badge bg-success text-white px-2 py-1 shadow-sm">
+                                        <i class="bi bi-check-circle me-1"></i> Aktív (+@p.ReorderQuantity @p.Unit)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary text-white px-2 py-1">Kikapcsolva</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    @if (isRaktaros)
+                                    {
+                                        <a asp-controller="Inventory" asp-action="Receive" asp-route-productId="@p.Id" class="btn btn-outline-success" title="Gyors beérkezés">
+                                            <i class="bi bi-arrow-down-circle"></i> Beérkezés
+                                        </a>
+                                    }
+                                    <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-outline-secondary" title="Részletek és történet">
+                                        <i class="bi bi-eye"></i> Részletek
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

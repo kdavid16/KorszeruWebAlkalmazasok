@@ -1,0 +1,91 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = InventoryManager.Web
+build_property.RootNamespace = InventoryManager.Web
+build_property.ProjectDir = C:\Users\mrkda\OneDrive\Asztali gép\7. félév\Web-es Alkalmazások (JAVA vagy C#)\InventoryManager\src\InventoryManager.Web\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\mrkda\OneDrive\Asztali gép\7. félév\Web-es Alkalmazások (JAVA vagy C#)\InventoryManager\src\InventoryManager.Web
+build_property._RazorSourceGeneratorDebug = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Inventory/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Inventory/Issue.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XElzc3VlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Inventory/Movements.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XE1vdmVtZW50cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Inventory/Receive.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5XFJlY2VpdmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Notifications/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Products/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Products/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Products/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Reorders/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVvcmRlcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mrkda/OneDrive/Asztali gép/7. félév/Web-es Alkalmazások (JAVA vagy C\#)/InventoryManager/src/InventoryManager.Web/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-b2erkdur5z

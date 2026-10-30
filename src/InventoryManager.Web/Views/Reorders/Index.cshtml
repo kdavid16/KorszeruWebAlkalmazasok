@@ -1,0 +1,192 @@
+@model IReadOnlyList<InventoryManager.Web.Models.ReorderOrder>
+@{
+    ViewData["Title"] = "Utánrendelések & Beszerzés";
+    var selectedStatus = ViewBag.SelectedStatus as InventoryManager.Web.Models.ReorderStatus?;
+    int pendingCount = ViewBag.PendingCount ?? 0;
+    bool isBeszerzo = User.IsInRole("Beszerzo");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1"><i class="bi bi-cart-check text-primary me-2"></i>Utánrendelések &amp; Beszerzés</h2>
+        <p class="text-muted mb-0">Automatikus szabályalapú és jóváhagyott beszállítói utánrendelések.</p>
+    </div>
+    @if (isBeszerzo)
+    {
+        <form asp-action="TriggerRules" method="post">
+            <button type="submit" class="btn btn-warning text-dark fw-semibold shadow-sm">
+                <i class="bi bi-arrow-repeat me-1"></i> Automatikus szabályok futtatása most
+            </button>
+        </form>
+    }
+</div>
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-info-circle-fill me-2"></i>
+        @TempData["InfoMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Bezárás"></button>
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Bezárás"></button>
+    </div>
+}
+
+<!-- Szabály magyarázó kártya -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+    <div class="card-body py-3">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-primary bg-opacity-10 text-primary p-2 rounded-circle fs-4">
+                <i class="bi bi-robot"></i>
+            </div>
+            <div>
+                <strong class="d-block text-dark">Hogyan működik az automatikus szabály?</strong>
+                <span class="text-muted small">
+                    Ha egy termék raktárkészlete a beállított <strong>minimális küszöb alá esik</strong> (pl. készletkiadás után vagy a szabályfuttatáskor), a rendszer azonnal létrehoz egy új utánrendelést az előre rögzített <strong>utánrendelési mennyiséggel</strong>. A Beszerző jóváhagyhatja a megrendelést, a Raktáros árubevételezésekor pedig a státusz automatikusan bevételezetté válik.
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Szűrő fülek -->
+<div class="d-flex gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-sm @(!selectedStatus.HasValue ? "btn-dark" : "btn-outline-secondary")">
+        Összes (@Model.Count)
+    </a>
+    <a asp-action="Index" asp-route-status="@InventoryManager.Web.Models.ReorderStatus.Pending" class="btn btn-sm @(selectedStatus == InventoryManager.Web.Models.ReorderStatus.Pending ? "btn-warning text-dark fw-bold" : "btn-outline-warning text-dark")">
+        Jóváhagyásra vár (Pending)
+    </a>
+    <a asp-action="Index" asp-route-status="@InventoryManager.Web.Models.ReorderStatus.Ordered" class="btn btn-sm @(selectedStatus == InventoryManager.Web.Models.ReorderStatus.Ordered ? "btn-primary" : "btn-outline-primary")">
+        Megrendelve (Ordered)
+    </a>
+    <a asp-action="Index" asp-route-status="@InventoryManager.Web.Models.ReorderStatus.Received" class="btn btn-sm @(selectedStatus == InventoryManager.Web.Models.ReorderStatus.Received ? "btn-success" : "btn-outline-success")">
+        Bevételezve (Received)
+    </a>
+    <a asp-action="Index" asp-route-status="@InventoryManager.Web.Models.ReorderStatus.Cancelled" class="btn btn-sm @(selectedStatus == InventoryManager.Web.Models.ReorderStatus.Cancelled ? "btn-secondary" : "btn-outline-secondary")">
+        Lemondva
+    </a>
+</div>
+
+<!-- Megrendelések táblázata -->
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Rendelésszám</th>
+                    <th>Termék</th>
+                    <th class="text-center">Mennyiség</th>
+                    <th class="text-end">Becsült érték</th>
+                    <th class="text-center">Státusz</th>
+                    <th>Kiváltó ok &amp; Beszállító</th>
+                    <th>Dátum</th>
+                    @if (isBeszerzo)
+                    {
+                        <th class="text-center">Műveletek</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        <td colspan="@(isBeszerzo ? 8 : 7)" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            Nincs a megadott feltételeknek megfelelő utánrendelés.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var order in Model)
+                    {
+                        <tr>
+                            <td class="font-monospace fw-bold small">
+                                @order.OrderNumber
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border font-monospace me-1">@(order.Product?.Sku ?? "-")</span>
+                                <a asp-controller="Products" asp-action="Details" asp-route-id="@order.ProductId" class="fw-semibold text-decoration-none">
+                                    @(order.Product?.Name ?? "Ismeretlen termék")
+                                </a>
+                            </td>
+                            <td class="text-center fw-bold fs-6">
+                                @order.Quantity @(order.Product?.Unit ?? "db")
+                            </td>
+                            <td class="text-end fw-semibold">
+                                @order.EstimatedTotalCost.ToString("N0") Ft
+                            </td>
+                            <td class="text-center">
+                                @switch (order.Status)
+                                {
+                                    case InventoryManager.Web.Models.ReorderStatus.Pending:
+                                        <span class="badge bg-warning text-dark px-2 py-1">
+                                            <i class="bi bi-hourglass-split me-1"></i> Jóváhagyásra vár
+                                        </span>
+                                        break;
+                                    case InventoryManager.Web.Models.ReorderStatus.Ordered:
+                                        <span class="badge bg-primary px-2 py-1">
+                                            <i class="bi bi-truck me-1"></i> Megrendelve
+                                        </span>
+                                        break;
+                                    case InventoryManager.Web.Models.ReorderStatus.Received:
+                                        <span class="badge bg-success px-2 py-1">
+                                            <i class="bi bi-check-circle me-1"></i> Bevételezve
+                                        </span>
+                                        break;
+                                    case InventoryManager.Web.Models.ReorderStatus.Cancelled:
+                                        <span class="badge bg-secondary px-2 py-1">
+                                            <i class="bi bi-x-circle me-1"></i> Lemondva
+                                        </span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <div class="small fw-semibold text-dark">@(order.TriggerReason ?? "-")</div>
+                                <div class="text-muted small">@(order.Notes ?? "-")</div>
+                            </td>
+                            <td class="small text-muted">
+                                @order.CreatedAt.ToLocalTime().ToString("yyyy.MM.dd. HH:mm")
+                            </td>
+                            @if (isBeszerzo)
+                            {
+                                <td class="text-center">
+                                    @if (order.Status == InventoryManager.Web.Models.ReorderStatus.Pending)
+                                    {
+                                        <div class="btn-group btn-group-sm">
+                                            <form asp-action="Approve" asp-route-id="@order.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success" title="Megrendelés jóváhagyása a beszállító felé">
+                                                    <i class="bi bi-check-lg"></i> Jóváhagyás
+                                                </button>
+                                            </form>
+                                            <form asp-action="Cancel" asp-route-id="@order.Id" method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-outline-danger" title="Megrendelés törlése">
+                                                    <i class="bi bi-x-lg"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    }
+                                    else if (order.Status == InventoryManager.Web.Models.ReorderStatus.Ordered)
+                                    {
+                                        <span class="small text-muted">Szállítás alatt</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="small text-muted">-</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

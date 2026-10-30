@@ -1,0 +1,100 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+/* ==============================================================
+   Magas kontrasztú, éles és jól olvasható jelvények (Badges)
+   ============================================================== */
+
+/* Kategória jelvény (Termékeknél és Készletáttekintőnél) */
+.badge-category {
+  background-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  border: 1px solid #94a3b8 !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  padding: 0.35rem 0.65rem !important;
+  border-radius: 6px !important;
+  display: inline-block;
+  letter-spacing: 0.2px;
+}
+
+/* Készletmozgás Típus jelvények (Készletmozgatásoknál és Termék adatlapnál) */
+.badge-inbound {
+  background-color: #198754 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.badge-outbound {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.badge-adjustment {
+  background-color: #475569 !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 0.8rem !important;
+  border-radius: 6px !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Hover állapotban garantáltan megmaradó kontraszt és élesség */
+.table-hover tbody tr:hover .badge-category {
+  background-color: #cbd5e1 !important;
+  color: #020617 !important;
+  border-color: #64748b !important;
+}
+
+.table-hover tbody tr:hover .badge-inbound {
+  background-color: #146c43 !important;
+  color: #ffffff !important;
+}
+
+.table-hover tbody tr:hover .badge-outbound {
+  background-color: #b02a37 !important;
+  color: #ffffff !important;
+}
+
+.table-hover tbody tr:hover .badge-adjustment {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
